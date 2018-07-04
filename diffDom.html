@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>1</div>
+    <script src="./diffDom.js"> </script>
+    <script>
+    window.onload = function() {
+            let oldEle = createElement('div', { class: 'father' }, [
+                createElement('h1', { style:'color:red' }, ['son1']),
+                createElement('h2', { style:'color:blue' }, ['son2']),
+                createElement('h3', { style:'color:red' }, ['son3'])
+            ])
+            let newEle = createElement('div', { class: 'father' }, [
+                createElement('h1', { style: 'color:red' }, ['son1']),
+                createElement('h2', { style: 'color:blue' }, [])
+            ])
+            let root = oldEle.render()
+            let patches = diff(oldEle, newEle)
+            patch(root, patches)
+            document.body.appendChild(root)
+        }
+    </script>
+</body>
+</html>
