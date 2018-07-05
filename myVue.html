@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <form>
+      <input type="text"  v-model="number">
+      <button type="button" v-click="increase">增加</button>
+    </form>
+    <h3 v-bind="number"></h3>
+    <form>
+      <input type="text"  v-model="count">
+      <button type="button" v-click="add">增加</button>
+    </form>
+    <h3 v-bind="count"></h3>
+  </div>
+  <script src="./myVue.js"></script>
+  <script>
+    window.onload = function () {
+      var app = new myVue({
+        el: '#app',
+        data: {
+          number: 0,
+          count: 0
+        },
+        methods: {
+          increase: function() {
+            this.number++
+          },
+          add: function () {
+            this.count++
+          }
+        }
+      })
+    }
+  </script>
+</body>
+</html>
