@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>加入购物车</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html, body, .wrapper {
+      width: 100%;
+      height: 100%;
+    }
+    .img {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: #333;
+      transition-timing-function: cubic-bezier(.55,0,.85,.36);
+      transition-duration: .5s;
+    }
+    .car {
+      width: 150px;
+      height: 50px;
+      background: #333;
+      border-radius: 5px;
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <button class="add">
+      add
+    </button>
+    <span class="img">1</span>
+    <div class="car">
+    </div>
+  </div>
+  <script>
+    let car = document.querySelector('.car')
+    let add = document.querySelector('.add')
+    let img = document.querySelector('.img')
+    add.addEventListener('click', function() {
+      let elAdd = add.getBoundingClientRect()
+      let elCar = car.getBoundingClientRect()
+      let dx = (elCar.left+elCar.width/2)-(elAdd.left+elAdd.width/2)
+      let dy = (elCar.top+elCar.height/2)-(elAdd.top+elAdd.height/2)
+      img.style.display = 'block'
+      img.style.transform = 'translateX('+ dx +'px)'
+      img.style.transform += 'translateY('+ dy +'px)'
+      setTimeout(() => {
+        img.style.display = 'none'
+        img.style.transform = 'translateX('+ 0 +'px)'
+        img.style.transform += 'translateY('+ 0 +'px)'
+      }, 500)
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<html>
+
+<head>
+  <style>
+    .container {
+      position: relative;
+      min-height: 90px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .text {
+      font-size: 0;
+      color: transparent
+    }
+
+    .textarea {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: calc(100% - 10px);
+      height: calc(100% - 10px);
+      resize: none;
+      outline: none;
+      border: none;
+    }
+
+    .font-style {
+      font-family: Arial, Helvetica, sans-serif;
+      word-wrap: break-word;
+      word-break: break-all;
+      line-height: 48px;
+      font-size: 32px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="text font-style"></span>
+    <textarea class="textarea font-style"></textarea>
+  </div>
+  <script>
+    let text = document.getElementsByClassName('text')[0];
+    var textarea = document.getElementsByClassName('textarea')[0];
+
+    textarea.addEventListener('input', function (e) {
+      text.innerHTML = e.target.value.replace(/\n$/, '/n ')
+    })
+  </script>
+</body>
+
+</html>
