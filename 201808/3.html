@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>算法</title>
+</head>
+
+<body>
+  <script>
+    //冒泡
+    function bubleSort(arr) {
+      let len = arr.length
+      for (let outer = len; i >= 2; i--) {
+        for (let inner = 0; inner < outer - 1; inner++) {
+          if (arr[inner] > arr[inner + 1]) {
+            [arr[inner], arr[inner + 1]] = [arr[inner + 1], arr[inner]]
+          }
+        }
+      }
+      return arr
+    }
+
+    //选择
+    function selectSort(arr) {
+      let len = arr.length
+      for (let i = 0; i < len - 1; i++) {
+        for (let j = i; j < len; j++) {
+          if (arr[j] < arr[i]) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+          }
+        }
+      }
+      return arr
+    }
+
+    //插入
+    function insertSort(arr) {
+      let len = arr.length
+      for (let i = 0; i < len; i++) {
+        for (let j = i; j > 0; j--) {
+          if (arr[j] < arr[j - 1]) {
+            [arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
+          } else {
+            break
+          }
+        }
+      }
+      return arr
+    }
+
+    //快排
+    function quickSort(arr) {
+      if (arr.length <= 1) return arr
+      let left = []
+      let right = []
+      let mid = arr.splice(0, 1)
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] > mid) {
+          right.push(arr[i])
+        } else {
+          left.push(arr[i])
+        }
+      }
+      return quickSort(left).concat(mid, quickSort(right))
+    }
+
+    //deepclone
+    function deepclone(origin, target) {
+      let target = target || {}
+      for (const key in origin) {
+        if (origin.hasOwnProperty(key)) {
+          if (Array.isArray(origin[key])) {
+            target[key] = []
+            deepclone(origin[key], target[key])
+          } else if (typeof origin[key] == 'object' && origin[key] != null) {
+            target[key] = {}
+            deepclone(origin[key], target[key])
+          } else {
+            target[key] = origin[key]
+          }
+        }
+      }
+      return target
+    }
+    Array.prototype.flat = function () {
+      var arr = []
+      this.forEach(item => {
+        if (Array.isArray(item)) {
+          arr.concat(item.flat())
+        } else {
+          arr.push(item)
+        }
+      })
+      return arr
+    }
+    Array.prototype.flat = function () {
+      this.toString().split(',').map(num => +num)
+    }
+    //爬樓梯
+    function f(n, a = 0, b = 1) {
+      if (n == 1) { return a }
+      return f(n - 1, b, a + b)
+    }
+    function cStairs(n) {
+      if (n === 1 || n === 2) {
+        return 1;
+      } else {
+        return cStairs(n - 1) + cStairs(n - 2)
+      }
+    }
+
+    //二分法
+    function binaryFind(arr, target) {
+      let low = 0, high = arr.length, mid
+
+      while(low<high) {
+        mid = Math.floor((low+high)/2)
+        if (arr[mid]==target) {return `${mid}:${arr[mid]}`}
+        else if(arr[mid]>target) {high=mid-1}
+        else{low=mid+1}
+      }
+      return -1
+    }
+
+    //广度优先
+    function BFS (root) {
+      if(!root) return
+      let queue = [{item:root, deep:1}]
+      while(queue.length) {
+        let node = queue.shift()
+        console.log(node)
+        if(!node.item.children.length) {
+          continue
+        }
+        Array.from(node.item.children).forEach(it => {
+          queue.push({
+            item: it,
+            deep: node.deep+1
+          })
+        })
+      }
+    }
+    //深度优先
+    function DFS (root) {
+      if(!root) return
+      let deep = arguments[1]||1
+      console.log(node, deep)
+      if (node.children.length) return
+      Array.from(node.children).forEach(item => {
+        DFS(item, deep+1)
+      })
+    }
+
+    //二叉树
+    function Node (left, data, right) {
+      this.left = left 
+      this.data = data 
+      this.right = right 
+      this.show = () => {return this.data} 
+    }
+    function BST () {
+      this.root = null
+      this.insert = insert
+    }
+    function insert(data) {
+      let node = new Node(null, data, null)
+      if (this.root==null) { this.root = node }
+      else {
+        let current = this.root, parent
+        while(true) {
+          parent = current
+          if(current.data>data) {
+            current = current.left
+            if (current==null) {
+              parent.left = node
+              break
+            }
+          } else {
+            current = current.right
+            if (current==null) {
+              parent.right = node
+              break
+            } 
+          }
+        }
+
+      }
+    }
+    //二叉树遍历
+    //前序遍历 因为是根左右，所以最后一个一定是最大的
+    function preOrder(node) {
+      if (node!=null) {
+        console.log(node)
+        preOrder(node.left)
+        preOrder(node.right)
+      }
+    }
+    //中序遍历在查找二叉树中，一定是从小到大的顺序
+    function inOrder(node) {
+      if (node!=null) {
+        inOrder(node.left)
+        console.log(node)
+        inOrder(node.right)
+      }
+    }
+    //后序遍历
+    function postOrder(node) {
+      if (node!=null) {
+        
+        postOrder(node.left)
+        postOrder(node.right)
+        console.log(node)
+      }
+    }
+    //最大
+    function getMin(bst) {
+      let current = bst.root
+      while(current.left) {
+        current = current.left
+      }
+      return current
+    }
+    function getMax(bst) {
+      let current = bst.root
+      while(current.right) {
+        current = current.right
+      }
+      return current
+    }
+    //查找
+    function findNode(target, bst) {
+      let current = bst.root
+      while(current) {
+        if(target===current.data) {
+          return current
+        } else if (target>current.data) {
+          current = current.right
+        } else if(target<current.data) {
+          current = current.left
+        }
+      }
+      return -1
+    }
+  </script>
+</body>
+
+</html>
