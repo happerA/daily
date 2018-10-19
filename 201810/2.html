@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>预加载</title>
+  <style>
+    * {
+      margin:0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    main {
+      width: 70%;
+      max-width: 750px;
+      margin:  0 auto;
+    }
+    h1 {
+      margin: 20px 0;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+    }
+    .full {
+      width: 100vh;
+      left: 50%;
+      margin-left: -50vw;
+    }
+    .space {
+      width: 100vh;
+      height: 200px;
+    }
+    .progressive {
+      position: relative;
+      display: block;
+      overflow: hidden;
+    }
+    .progressive img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border: 0 none;
+    }
+    .progressive img.preview {
+      filter: blur(2vw);
+      transform: scale(1.05);
+    }
+    .progressive img.hide {
+      opacity: 0;
+    }
+    .progressive img.origin {
+      position: absolute;
+      left: 0;
+      top: 0;
+      animation: origin 1s ease-out;
+    }
+    @keyframes origin {
+      0% {
+        transform: scale(1.1);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>progressive image simple example</h1>
+  <main>
+    <div class="progressive full">
+      <img class="preview lazy" data-src="./img/1.jpg" src="./img/r1.jpg"/>
+    </div>
+    <div class="space"></div>
+
+    <div class="progressive">
+      <img class="preview lazy" data-src="./img/2.jpg" src="./img/r2.jpg"/>
+    </div>
+    <div class="space"></div>
+
+    <div class="progressive">
+      <img class="preview lazy" data-src="./img/3.jpg" src="./img/r3.jpg"/>
+    </div>
+    <div class="space"></div>
+    <div class="progressive">
+      <img class="preview lazy" data-src="./img/7.jpg" src="./img/r7.jpg"/>
+    </div>
+    <div class="space"></div>
+    <div class="progressive ">
+      <img class="preview lazy" data-src="./img/6.jpg" src="./img/r6.jpg"/>
+    </div>
+    <div class="space"></div>
+    <div class="progressive">
+      <img class="preview lazy" data-src="./img/5.jpg" src="./img/r5.jpg"/>
+    </div>
+    <div class="space"></div>
+
+    <div class="progressive full">
+      <img class="preview lazy" data-src="./img/4.jpg" data-srcset="./img/4.jpg 960w, ./img/4.jpg 1280w, ./img/4.jpg 1920w" src="./img/r4.jpg"/>
+    </div>
+    <div class="space"></div>
+  </main>
+  <script>
+    const Event = ['scroll', 'wheel', 'mousewheel', 'resize']
+    const Util = {
+      throttle(action, delay) {
+        let timeout = null
+        let lasttime = 0
+        return function() {
+          if (timeout) return
+          const elapsd = Date.now() - lasttime
+          const context = this
+          const arg = arguments
+          const runCallback =  function() {
+            lasttime = Date.now()
+            timeout = false
+            action.apply(context, arg)
+          }
+          if(elapsd>lasttime) {
+            runCallback()
+          } else {
+            timeout = setTimeout(runCallback, delay)
+          }
+        }
+      },
+
+      on(el, ev, fn) {
+        el.addEventListener(ev, fn)
+      },
+
+      off(el, ev, fn) {
+        el.removeEventListener(ev, fn)
+      }
+    }
+
+    const events = (el, bind) => {
+      if (bind) {
+        Event.forEach(evt => {
+          Util.on(el, evt, lazy)
+        });
+      } else {
+        Event.forEach(evt => {
+          Util.off(el, evt, lazy)
+        });
+      }
+    }
+    let windowHashBIndEvents= false
+    const lazy = Util.throttle(() => {
+      checkImage()
+    }, 300)
+    checkImage()
+
+    function checkImage() {
+      if (!windowHashBIndEvents) {
+        windowHashBIndEvents = true
+        events(window, true)
+      }
+      const lazys = document.querySelectorAll('img.lazy')
+      const l = lazys.length
+      if (l>0) {
+        for (let i = 0; i < l; i++) {
+          const rect = lazys[i].getBoundingClientRect()
+          if (rect.top < window.innerHeight && rect.bottom > 0 && rect.left<window.innerWidth && rect.right>0) {
+            loadImage(lazys[i])
+          }
+        }
+      } else {
+        window.windowHashBIndEvents = false
+        events(window, false)
+      }
+    }
+
+    function loadImage(item) {
+      const img = new Image()
+      if (item.dataset) {
+        item.dataset.srcset && (img.srcset =  item.dataset.srcset)
+        item.dataset.sizes && (img.sizes =  item.dataset.sizes)
+      }
+      img.src = item.dataset.src
+      img.className = 'origin'
+      img.onload = () => {
+        item.classList.remove('lazy')
+        mountImage(item, img)
+      }
+    }
+
+    function mountImage(preview, img) {
+      const parent = preview.parentNode
+      parent.appendChild(img).addEventListener('animationend', function(e) {
+        preview.classList.remove('origin')
+        e.target.alt = preview.alt || ''
+        preview.classList.add('hide')
+      })
+    }
+  </script>
+</body>
+</html>
