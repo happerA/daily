@@ -2,14 +2,24 @@
   <div id="app">
     <vheader/>
     <router-view/>
+    <audio ref="myAudio"></audio>
   </div>
 </template>
 <script>
 import vheader from './components/Vheader'
+import { mapMutations } from 'vuex'
 export default {
   name: 'app',
   components: {
     vheader
+  },
+  created() {
+    this.$nextTick(() => {
+      this.SET_AUDIOELE(this.$refs.myAudio)
+    });
+  },
+  methods: {
+    ...mapMutations(['SET_AUDIOELE'])
   }
 }
 </script>

@@ -1,6 +1,5 @@
 class Song {
   constructor({...params}) {
-    console.log(params)
     this.id = params.id
     this.name = params.name
     this.singer = params.singer

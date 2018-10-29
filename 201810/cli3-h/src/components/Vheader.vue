@@ -8,8 +8,8 @@ export default {
 </script>
 <style lang="scss" scoped>
   .p_logo {
-    height: 80px;
-  
+    height: 60px;
+
     background: url('../assets/player_logo.png');
     background-repeat: no-repeat;
     background-position: 20px;
