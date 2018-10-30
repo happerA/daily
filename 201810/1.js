@@ -1,4 +1,5 @@
-// 观察
+// 观察 模式
+
 function Subject() {
   this.observers = []
 }
