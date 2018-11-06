@@ -3,3 +3,8 @@ export const mode = state => state.mode
 export const status = state => state.status
 export const playList = state => state.playList
 export const playIndex = state => state.playIndex
+export const song = state => state.song
+export const mode = state => state.mode
+export const lyric = state => state.lyric
+export const nolyric = state => state.nolyric
+export const lyricIndex = state => state.lyricIndex

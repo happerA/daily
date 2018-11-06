@@ -1,7 +1,8 @@
 <template>
   <div class="nav-tools">
-    <router-link v-for="(nav, index) in navs" :key="index" 
-      :to="nav.link" 
+    <router-link v-for="(nav, index) in navs" :key="index"
+      :to="nav.link"
+      :class="{'act': acIndex == index}"
       tag="span">
       {{nav.name}}
     </router-link>
@@ -19,6 +20,12 @@ export default {
         {link: 'userlist', name: '我的歌单'},
         {link: 'hostory', name: '我听过的'},
       ]
+    }
+  },
+  computed: {
+    acIndex() {
+      let router = this.$route.path
+      return this.navs.findIndex(nav => `/${nav.link}` === router)
     }
   }
 }
@@ -43,6 +50,10 @@ export default {
       opacity: .8;
       transition: all .2s linear;
       &:hover {
+        opacity: 1;
+        border-color: #fff;
+      }
+      &.act {
         opacity: 1;
         border-color: #fff;
       }

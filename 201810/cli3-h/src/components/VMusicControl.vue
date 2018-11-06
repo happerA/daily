@@ -5,12 +5,15 @@
       <span :class="['contorl-btn', status ? 'play' : 'pause']" @click="play"></span>
       <span class="contorl-btn next"></span>
     </div>
-    <v-progress :percent="percentMusic"></v-progress>
+    <v-progress :percent="percentMusic"
+      @progress="musicProgress"/>
     <div class="more-btns">
-      <span class="more-btn mode"></span>
-      <span class="more-btn message"></span>
+      <span :class="['more-btn', 'mode', mode == 'cirle' ? '': (mode == 'random' ?'mode-random': 'mode-loop')]"
+        @click="changeMode"/>
+      <span class="more-btn message"/>
       <div class="more-btn volume">
         <span class="volume-btn"></span>
+        <v-progress :percent="volume"></v-progress>
       </div>
     </div>
   </div>
@@ -23,14 +26,15 @@
     components: { VProgress },
     data() {
       return {
-        currentTime: 0
+        currentTime: 0,
+        volume: 1,
+        modes: ['circle', 'random', 'loop']
       }
     },
     computed: {
-      ...mapGetters(['playList', 'status', 'audioEle', 'playIndex']),
+      ...mapGetters(['playList', 'status', 'audioEle', 'playIndex', 'mode']),
       percentMusic() {
         const duration = this.audioEle ? this.audioEle.duration : null
-        duration && console.log(this.currentTime / duration)
         return this.currentTime && duration ? this.currentTime / duration : 0
       }
     },
@@ -40,7 +44,7 @@
       })
     },
     methods: {
-      ...mapActions(['setStatus']),
+      ...mapActions(['setStatus', 'setPlayIndex', 'setMode']),
       play() {
         this.setStatus(!this.status)
       },
@@ -51,7 +55,7 @@
         };
         //当前音乐播放完毕
         ele.onended = () => {
-          this.next()
+          this.mode == 'loop' ? this.loop() : this.next()
         };
       },
       prev () {
@@ -62,8 +66,21 @@
         let num = this.playIndex < this.playList.length-1 ? this.setPlayIndex(this.playIndex+1) : this.setPlayIndex(0)
         this.setStatus(true)
       },
+      loop() {
+        this.audioEle.currentTime = 0
+        this.audioEle.play()
+      },
+      musicProgress(data) {
+        this.audioEle.currentTime = this.audioEle.duration * data
+      },
+      volumeProgress(data) {
+        this.volume = data
+        this.audioEle.volume = data
+      },
+      changeMode() {
+        this.setMode(this.modes[this.modes.findIndex(item => this.mode==item)+1])
+      }
     },
-
   }
 </script>
 <style lang="scss">
@@ -119,15 +136,30 @@
         &.mode {
           width: 26px;
           height: 25px;
+          cursor: pointer;
           background-image: url('../assets/player.png');
           background-position: 0 -205px;
+          &.mode-random {
+            width: 25px;
+            height: 19px;
+            background-position: 0 -74px;
+          }
+          &.mode-loop {
+            width: 26px;
+            height: 25px;
+            background-position: 0 -232px;
+          }
         }
+
         &.message {
           background-image: url('../assets/player.png');
           background-position: 0 -400px;
         }
         &.volume {
           width: 150px;
+          height: 100%;
+          display: flex;
+          align-items: center;
           & > .volume-btn {
             display: inline-block;
             width: 26px;

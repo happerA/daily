@@ -1,25 +1,17 @@
 <template>
-  <div class="wrapper home">
-    <v-nav></v-nav>
-    <v-music-list :songlist="songlist"/>
-    <v-music-detail></v-music-detail>
-    <v-music-control></v-music-control>
-  </div>
+  <v-music-list :songlist="songlist"/>
 </template>
 
 <script>
 // @ is an alias to /src
-import VNav from '@/components/VNav.vue'
 import VMusicList from '@/components/VMusicList.vue'
-import VMusicDetail from '@/components/VMusicDetail.vue'
-import VMusicControl from '@/components/VMusicControl.vue'
 import * as api from '@/apis/index'
 import { formatSongs } from '@/model/song'
 
 export default {
   name: 'home',
   components: {
-    VNav, VMusicList, VMusicDetail, VMusicControl
+    VMusicList
   },
   data() {
     return {

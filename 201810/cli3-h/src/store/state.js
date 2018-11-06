@@ -3,6 +3,12 @@ const state = {
   mode: '',
   status: false,
   playList: [],
-  playIndex: undefined
+  playRandomList: [],
+  playIndex: undefined,
+  song: null,
+  mode: 'cirle',
+  nolyric: true,
+  lyric: [],
+  lyricIndex: 0
 }
 export default state

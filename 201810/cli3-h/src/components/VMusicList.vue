@@ -12,7 +12,7 @@
         <span class="music_name music_msg">
           <span class="music_num music_msg">{{index+1}}</span>
           {{song.name}}
-          <span :class="['music_play', (status && playIndex ==index) ? 'pause' : '']" @click="status ? pause() : play(index)"></span>
+          <span :class="['music_play', (status && playIndex ==index) ? 'pause' : '']" @click="play(index)"></span>
         </span>
         <span class="music_name music_msg">{{song.singer}}</span>
         <span class="music_album music_msg">{{song.album}}</span>
@@ -21,28 +21,42 @@
   </div>
 </template>
 <script>
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import * as api from '@/apis/index'
+
 export default {
   name: 'v-music-list',
   props: {
     songlist: {type: Array, default: () => ([])}
   },
   computed: {
-    ...mapGetters(['audioEle', 'playIndex', 'status'])
+    ...mapGetters(['audioEle', 'playIndex', 'status', 'song', 'playList'])
   },
   methods: {
-    ...mapActions(['setPlayList', 'setStatus', 'setPlayIndex']),
+    ...mapActions(['setPlayList', 'setStatus', 'setPlayIndex', 'setSong']),
     play(index) {
-      if (this.playIndex!==index) {
-        this.setPlayList(this.songlist)
-        this.setPlayIndex(index)
+      let id = this.songlist[index].id
+      if (this.song && this.song.id === id && this.status) {
+          this.setStatus(false);
+          return
       }
 
-      this.setStatus(true)
+      if (this.song && this.song.id === id && !this.status) {
+          this.setStatus(true);
+      } else {
+        api.musicDetail(this.songlist[index].id).then(res => {
+            if (res.data.songs[0].al.picUrl) {
+              this.setSong({...this.songlist[index],image: res.data.songs[0].al.picUrl})
+              if (!this.playList.length||this.playList.toString() != this.songlist.toString()) {
+                this.setPlayList(this.songlist)
+              }
+
+              this.setPlayIndex(index);
+              this.setStatus(true)
+            }
+          });
+      }
     },
-    pause() {
-      this.setStatus(false)
-    }
   }
 }
 </script>

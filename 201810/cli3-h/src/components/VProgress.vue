@@ -1,8 +1,9 @@
 <template>
-  <div class="music-progress" ref="progress">
-    <div class="progress-container">
+  <div class="music-progress" >
+    <div class="progress-container" ref="progress">
       <div class="progress-bar">
-        <span class="dot" ref="dot"></span>
+        <span class="dot" ref="dot"
+          @mousedown="mousedown"/>
       </div>
       <span class="progress-out"></span>
       <span class="progress-inner"></span>
@@ -15,9 +16,47 @@ export default {
   props: {
     percent: { type: Number }
   },
+  mounted() {
+    this.init()
+  },
+  data() {
+    return {
+      isFlag: false,
+      X: 0,
+      offleft: 0,
+      moveX: 0,
+      max: 0
+    }
+  },
   methods: {
+    init() {
+      document.addEventListener('mousemove', this.mousemove)
+      document.addEventListener('mouseup', this.mouseup)
+      this.max = this.$refs.progress.offsetWidth - this.$refs.dot.offsetWidth
+
+    },
     move(width) {
       this.$refs.dot.style.left = width + 'px'
+    },
+    mousedown(e){
+      this.isFlag = true;
+      this.X = e.clientX; //获取当前元素相对于窗口的X左边
+      this.offleft = this.$refs.dot.offsetLeft; //当前元素相对于父元素的左边距
+    },
+    mousemove (e){
+      if (this.isFlag == false){
+        return;
+      }
+
+      let changeX = e.clientX
+      this.moveX = Math.min(this.max, Math.max(0, this.offleft+(changeX - this.X)))
+      this.$refs.dot.style.left = Math.max(0, this.moveX) +"px";
+    },
+    mouseup() {
+      if (this.isFlag) {
+        this.isFlag = false
+        this.$emit('progress', this.moveX/this.max)
+      }
     }
   },
   watch: {
@@ -25,7 +64,7 @@ export default {
       if (val >= 0) {
         const barWidth = this.$refs.progress.clientWidth;
         const offsetWidth = val * barWidth;
-        this.move(offsetWidth)
+        this.move(offsetWidth - 5)
       }
     }
   }

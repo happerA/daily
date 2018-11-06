@@ -15,7 +15,7 @@ const createSong = (song) => {
     name: song.name,
     singer: song.artists.length > 0&&song.artists.map(singer => singer.name).join('/'),
     album: song.album.name,
-    image: song.album.picUrl||null,
+    image: song.album.picUrl || null,
     duration: song.duration/1000,
     url: `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`,
   })
