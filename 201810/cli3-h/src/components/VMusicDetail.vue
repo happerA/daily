@@ -2,6 +2,11 @@
   <div class="music-detail">
     <div class="song-info">
       <img class="song-img" :src="songBg" alt="play-cover">
+      <template v-if="song">
+          <dd>歌曲名：{{song.name}}</dd>
+          <dd>歌手名：{{song.singer}}</dd>
+          <dd>专辑名：{{song.album}}</dd>
+      </template>
     </div>
     <div class="lyric-container">
       <div class="lyric-view" :style="lyricTop">
@@ -24,7 +29,7 @@ export default {
       return this.song ? `${this.song.image}?param=200y200` : (require('../assets/player_cover.png'))
     },
     lyricTop() {
-      return `transform: translateY(((-34 * ${this.lyricIndex})px)`
+      return this.lyricIndex > 4 ? `transform :translate3d(0, ${-34*(this.lyricIndex-3)}px, 0)`: ''
     }
   }
 }
@@ -35,6 +40,7 @@ export default {
     top: 0;
     width: 320px;
     right: 0;
+    bottom: 60px;
     .song-info {
       display: block;
       width: 186px;
@@ -53,6 +59,37 @@ export default {
         width: 201px;
         height: 180px;
         background: url("../assets/album_cover_player.png") 0 0 no-repeat;
+      }
+      & dd {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+  .lyric-container {
+    position: absolute;
+    top: 300px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    .lyric-view {
+      transform: translate3d(0,0,0);
+      transition: transform .6s ease-in-out;
+      & p {
+        font-size: 14px;
+        line-height: 34px;
+        text-align: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        &.on {
+          color: #40ce8f;
+        }
       }
     }
   }

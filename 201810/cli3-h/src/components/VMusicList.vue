@@ -10,7 +10,8 @@
         class="music">
 
         <span class="music_name music_msg">
-          <span class="music_num music_msg">{{index+1}}</span>
+          <span class="music_num music_msg on" v-if="status && playIndex ==index"></span>
+          <span class="music_num music_msg" v-else>{{index+1}}</span>
           {{song.name}}
           <span :class="['music_play', (status && playIndex ==index) ? 'pause' : '']" @click="play(index)"></span>
         </span>
@@ -95,6 +96,12 @@ export default {
           width: 40px;
           left: 0;
           text-align: center;
+          &.on {
+            display: block;
+            height: 100%;
+            font-size: 0;
+            background: url("../assets/wave.gif") no-repeat center center;
+          }
         }
         &:first-child {
           flex: 1;

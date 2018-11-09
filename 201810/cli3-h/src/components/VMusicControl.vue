@@ -32,7 +32,7 @@
       }
     },
     computed: {
-      ...mapGetters(['playList', 'status', 'audioEle', 'playIndex', 'mode']),
+      ...mapGetters(['playList', 'status', 'audioEle', 'playIndex', 'mode', 'lyric']),
       percentMusic() {
         const duration = this.audioEle ? this.audioEle.duration : null
         return this.currentTime && duration ? this.currentTime / duration : 0
@@ -44,7 +44,7 @@
       })
     },
     methods: {
-      ...mapActions(['setStatus', 'setPlayIndex', 'setMode']),
+      ...mapActions(['setStatus', 'setPlayIndex', 'setMode', 'setLyricIndex']),
       play() {
         this.setStatus(!this.status)
       },
@@ -52,6 +52,13 @@
         let ele= this.audioEle
         ele.ontimeupdate = () => {
           this.currentTime = ele.currentTime
+          let lyricIndex = 0;
+          for (let i = 0; i < this.lyric.length; i++) {
+              if (ele.currentTime > this.lyric[i].time) {
+                  lyricIndex = i;
+              }
+          }
+          this.setLyricIndex(lyricIndex)
         };
         //当前音乐播放完毕
         ele.onended = () => {
@@ -89,7 +96,6 @@
     bottom: 0;
     width: 100%;
     height: 50px;
-    border-top: 1px solid #fafafa;
     display: flex;
     &.mask {
       opacity: .6;

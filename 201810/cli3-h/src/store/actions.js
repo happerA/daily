@@ -14,11 +14,11 @@ export const setStatus = ({commit, state}, data) => {
 export const setPlayIndex = ({commit, state}, data) => {
   commit('SET_PLAYINDEX', data)
 
-  let url = state.mode == 'random' ? state.playRandomList[data].url : state.playList[data].url
-  state.audioEle.src = url
+  let song = state.mode == 'random' ? state.playRandomList[data] : state.playList[data]
+  state.audioEle.src = song.url
   commit('SET_LYRICINDEX', 0)
 
-  api.lyric(data).then(res => {
+  api.lyric(song.id).then(res => {
     if (res.status === 200) {
       if (res.data.nolyric) {
         commit('SET_NOLYRIC', true)
@@ -34,4 +34,7 @@ export const setSong = ({commit}, data) => {
 }
 export const setMode = ({commit}, data) => {
   commit('SET_MODE', data)
+}
+export const setLyricIndex = ({commit}, data) => {
+  commit('SET_LYRICINDEX', data)
 }
