@@ -249,3 +249,38 @@ const rob = (nums) => {
   }
   return dp[nums.length-1]
 }
+
+/**
+ * Reverse Linked List
+ * 反转链表
+*/
+const reverseList = (list) => {
+  if (!list) return list
+  let start = list
+  let end = list
+  while (end.next) {
+    let node =end.next
+    end.next = node.next
+    node.next = start
+    start = node
+  }
+  return start
+}
+const reverseList1 = (head,pre) => {
+  if (!head) return head
+  const next = head.next
+  head.next = pre || null
+  return next ? reverseList1(next, head) : head
+}
+
+/**
+ * Invert Binary Tree
+ * 反转二叉树
+ */
+const invertTree = (root) => {
+  if(!root) return []
+  [root.left, root.right] = [root.right, root.left]
+  invertTree(root.left)
+  invertTree(root.right)
+  return root
+}

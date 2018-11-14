@@ -6,6 +6,7 @@
         v-for="(music, index) in tMusics"
         :key="index"
         tag="div"
+        :to="{name: 'PlayList', params: {id: music.id}}"
         :title="music.name+music.updateFrequency">
         <img class="top-item_img" :src="`${music.coverImgUrl}?param=200y200`" alt="cover">
         <h3 class="top-item_name">{{music.name}}</h3>
@@ -21,7 +22,7 @@
         :title="list.name+list.updateFrequency">
         <img class="top-item_img" :src="`${list.picUrl}?param=200y200`" alt="cover">
         <h3 class="top-item_name">{{list.name}}</h3>
-      </router-lin>
+      </router-link>
     </div>
   </div>
 </template>

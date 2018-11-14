@@ -14,11 +14,11 @@ export default {
   data() {
     return {
       navs: [
-        {link: 'playlist', name: '正在播放'},
-        {link: 'toplist', name: '推荐'},
-        {link: 'search', name: '搜索'},
-        {link: 'userlist', name: '我的歌单'},
-        {link: 'hostory', name: '我听过的'},
+        {link: '/playlist', name: '正在播放'},
+        {link: '/toplist', name: '推荐'},
+        {link: '/search', name: '搜索'},
+        {link: '/userlist', name: '我的歌单'},
+        {link: '/hostory', name: '我听过的'},
       ]
     }
   },
