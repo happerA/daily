@@ -284,3 +284,241 @@ const invertTree = (root) => {
   invertTree(root.right)
   return root
 }
+
+/**
+ * Palindrome Linked List
+ * 判断一个链表是不是回文，要求 O(n) 时间， O(1) 空间
+ * 本题暴力解法就是遍历完链表后转为字符串，然后看是不是回文，符合时间复杂度要求，但是不符合空间复杂度要求
+ * 要求 O(1) 的空间，那就只能从链表本身动手了。首先判断回文无非就是从两边到中间或者从中间到两边。由于我们可以对链表本身动手，那就考虑让链表能够倒着访问（因为要求O(1)空间，所以不能直接改造为双向链表）。由于我们只能让链表顺着一个方向走，所以可以想到选择从中间到两边的方式，左边的向前(pre)，右边的向后(next)。
+ * 那么我们如何找到中间的节点呢 - 中间节点即为链表的一半，那我们使用一个快指针一次走两步，一个慢指针一次走一步，那么快指针走到尾时，慢指针应该走到链表中间。同时要注意区分链表长度是奇数还是偶数：如果是奇数的话，正中间的节点不需要做判断，应该用它前后两个节点开始比较。
+ */
+const isPalindrome = (head) => {
+  if (!head) return true
+  if (!head.next) return false
+  let fast = head.next
+  let slow = head
+  let pair = null
+  while (fast!==null&& fast.next !==null) {
+    slow.next.pre = slow
+    slow = slow.next
+    fast = fast.next.next
+  }
+
+  if (!fast||!fast.next) {
+    pair = slow.next
+    slow = slow.pre
+  } else {
+    pair = slow.next
+  }
+  while (pair) {
+    if (pair.val!==slow.val) return false
+    pair = pair.next
+    slow = slow.pre
+  }
+  return true
+}
+
+/**
+ * Move Zeroes
+ * 给定一个数组nums，写一个函数将所有0移动到它的末尾，同时保持非零元素的相对顺序。
+ * 额外要求：
+ * 您必须在不制作数组副本的情况下就地执行此操作
+ * 最小化操作总数。
+ * 思路：
+ * 最小化操作：遍历一遍的过程中操作完，且不需要额外移动操作
+ * 记 zero 的个数为 zeroesNums ，然后将每一个非零的数向前移动 zeroesNums ，最后在数组末尾填上 zero
+*/
+const moveZeroes = (nums) => {
+  let zeroNums = 0
+  nums.forEach((num, index) => {
+    if (num === 0) {
+      zeroNums++
+    } else {
+      nums[i-zeroNums] = num
+    }
+  })
+
+  for (let index = nums.length-1; zeroNums >0; index--) {
+    nums[index] = 0
+    zeroNums--
+  }
+  return nums
+}
+
+/*
+ * Path Sum III
+ * 给一颗每个节点都是整数（可正可负）的二叉树，求有多少条路径加起来等于一个给定值。注意，路径不需要在根或叶子处开始或结束，但必须向下（即仅从父节点行进到子节点）。
+ * 解法一：
+ * 暴力解，使用 BFS 和递归来搜索符合条件的路径。需要注意的是这种方法没有利用任何缓存，即计算每条路径和的时候都重新遍历了所有路径节点。时间复杂度为 O(n²)
+*/
+
+/**
+ * Merge Two Binary Trees
+ */
+const mergeTree = (t1, t2) => {
+  if(!t1) return t2
+  if(!t2) return t1
+  t1.val += t2.val
+  t1.left = mergeTree(t1.left, t2.left)
+  t1.right = mergeTree(t1.right, t2.right)
+  return t1
+}
+
+/**
+ * 平面上有若干个不特定的形状，如下图所示。请写程序求出物体的个数，以及每个不同物体的面积。
+ * 分析
+ * 想要知道有多少个图形，想到的就是先获取图片中的每一个像素点然后判获取像素点的背景颜色（RGBA）。想要获得图片中的每一个像素点，那就可以联想到使用h5的canvas。
+*/
+const numsArea = () => {
+  let ctx = canvans.getContext('2d')
+  let img = new Image()
+  img.src = './image.png'
+  img.onload = () => {}
+
+  // 创建存储图片像素点的二维数组
+  let coordinates = []
+  for (let i = 0; i<200;i++) {
+    coordinates[i] = []
+  }
+
+  // 获取像素点，也就是使用getimagedata方法。
+  ctx.drawImage(img, 0, 0)
+  let data= ctx.getImageData(0,0,350, 200).data
+
+  let x= 0
+  let y = 0
+  for (let i = 0, len = data.length; i<len;i+=4) {
+    let red= data[i]
+    let green= data[i+1]
+    let blue= data[i+2]
+    let alpha= data[i+3]
+    if (`${red} ${green} ${blue}` == '210 227 199') {
+      coordinates[y][x] = 0
+    } else {
+      coordinates[y][x] = 1
+    }
+    x++
+    if (x>350) {
+      y++
+      x =0
+    }
+  }
+
+
+  // 连续面积和个数
+  const getAreaAndNum = () => {
+    let sum = []
+    let count = 0
+    for(let i = 0;i<h;i++) {
+      for(let j=0;j<w;j++) {
+        if (coordinates[i][j]==1) {
+          let buf = 0
+          buf = linkSum(i,j,buf)
+          count++
+          sum.push({index: count, area: buf})
+        }
+      }
+    }
+    return {sum, count}
+  }
+
+  const linkSum = (i,j,num) => {
+    coordinates[i][j] = 0
+    num++
+    if ((i+1<h) && coordinates[i+1][j]==1) {
+      num = linkSum(i+1, j, num)
+    }
+    if ((i-1>=0) && coordinates[i-1][j]==1) {
+      num = linkSum(i-1, j, num)
+    }
+    if ((j+1<w) && coordinates[i][j+1]==1) {
+      num = linkSum(i, j+1, num)
+    }
+    if ((j-1>=0) && coordinates[i][j-1]==1) {
+      num = linkSum(i, j-1, num)
+    }
+    return num
+  }
+}
+
+/*二叉搜索树上的每一个节点要加上所有大于他的节点的值：原始BST的每个 key 都更改为原始 key 加上大于BST中原始 key 的所有 key 的总和。
+解法一：
+
+BST的性质如下
+
+若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值；
+若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+它的左、右子树也分别为二叉排序树。
+
+
+使用 右->中->左的顺序从大到小遍历，并利用 cacheVal 来缓存比当前节点大的值来达到 O(n) 的时间复杂度
+在递归中进行 cacheVal 的传递而不是在外层保存该值（麻烦一点，因为需要处理右子树最左节点：代码29行）
+因为右子树最左节点的只是除了当前节点以外最小的，所以右子树最左节点的值为最大的（所有比当前节点大的节点加起来的值）。因此当前节点只需要加上右子树最左节点的值即可
+*/
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+const countBST = (root) => {
+  if (root) {
+    countVal(root)
+    return []
+  } else {
+    return []
+  }
+}
+
+function countVal(root, val = 0) {
+  if (root.right) {
+    val = countVal(root.right, val)
+  }
+  root.val+= val
+  val = root.val
+  if (root.left) {
+    return countVal(root.left, val)
+  }
+  return root.val
+}
+
+/**
+ * Hamming Distance
+ * Hamming Distance 表示两个等长字符串在对应位置上不同字符的数目，也度量了通过替换字符的方式将字符串x变成y所需要的最小的替换次数。
+ * 1.常规解法：转成二进制以后一位一位的算，需要手动补位或手动判断 undefine
+
+ * @param {number} x
+ * @param {number} y
+ * @return {number}
+ */
+const Hamming = (x, y) => {
+  let binaryX = x.toString(2)
+  let binaryY = y.toString(2)
+  const len = Math.max(binaryX.length, binaryY.length)
+  if (binaryX.length < len) {
+    binaryX = binaryX.padStart(len, '0')
+  } else {
+    binaryY = binaryY.padStart(len, '0')
+  }
+  let result = 0
+  for (let index = len-1; index >= 0; index--) {
+    const element = array[index];
+    if (binaryY[index]!==binaryX[index]) {
+      result++
+    }
+  }
+  return result
+}
+
+/**
+ * Find All Numbers Disappeared in an Array
+ * 常规解法：因为题目上给出条件说数组里的数字都在 [1, n]，且要求不适用额外空间，因此可以想到该题为套路题：对原位置上的数字移动/加减/位运算等解法。
+ * 此题常规可以选用反转对应位置上数字的方法：把出现的数字的对应位上的数字变为负数，然后遍历找出那些正数，其下标+1则为没有出现过的数字
+ * @param {number[]} nums
+ * @return {number[]}
+ */
