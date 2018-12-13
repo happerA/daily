@@ -18,14 +18,12 @@ mongoose.connection.on('disconnected', function () {
 });
 
 var userSchema = new mongoose.Schema({
-  username: {type: String},
-  password: {type: String},
-  avatar: {type: String},
-  age: {type: Number, default: 0},
-  email: {type: String},
-  time: {type: Date, default: Date.now},
+  username : { type: String },                    //用户账号
+  userpwd: {type: String},                        //密码
+  userage: {type: Number},                        //年龄
+  logindate : { type: Date}
 })
 //创建model
-var UserModel = mongoose.model('user', userSchema)
+var User = mongoose.model('user', userSchema)
 
-module.exports = UserModel
+module.exports = User

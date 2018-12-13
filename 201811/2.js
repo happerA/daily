@@ -522,3 +522,28 @@ const Hamming = (x, y) => {
  * @param {number[]} nums
  * @return {number[]}
  */
+
+
+// 广度预先
+function wideTraversal(node, nodes=[node],i=0){
+
+  if(nodes[i]!=null){
+  console.log(nodes[i].children)
+      nodes[i].children.length&&nodes.push(...nodes[i].children);
+  i++
+      wideTraversal(nodes[i], nodes, i);
+  }
+  return nodes;
+}
+
+//深度
+function deepTraversal(node, nodelist= []){
+
+  if(node!=null){
+      nodelist.push(node);
+      let childrens=node.children;
+      for(let i=0;i<childrens.length;i++)
+          deepTraversal(childrens[i],nodelist);
+  }
+  return nodelist;
+}
